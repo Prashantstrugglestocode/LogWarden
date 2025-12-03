@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+httpx
+pydantic
+python-multipart
+psycopg2-binary
+sqlalchemy
+requests
+pywin32; sys_platform == 'win32'

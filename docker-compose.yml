@@ -1,0 +1,71 @@
+version: '3.8'
+
+services:
+  # --- Core API & Processing ---
+  core-api:
+    build: ./core-api
+    container_name: security-officer-core
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://user:password@db:5432/security_db
+      - OLLAMA_HOST=http://ai-engine:11434
+    depends_on:
+      - db
+      - ai-engine
+    networks:
+      - security-net
+
+  # --- AI Engine (Ollama) ---
+  ai-engine:
+    image: ollama/ollama:latest
+    container_name: security-officer-ai
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    networks:
+      - security-net
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: 1
+    #           capabilities: [gpu]
+
+  # --- Database ---
+  db:
+    image: postgres:15-alpine
+    container_name: security-officer-db
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: security_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - security-net
+
+  # --- Dashboard (UI) ---
+  dashboard:
+    build: ./dashboard
+    container_name: security-officer-dashboard
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:8000
+    depends_on:
+      - core-api
+    networks:
+      - security-net
+
+networks:
+  security-net:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  ollama_data:
