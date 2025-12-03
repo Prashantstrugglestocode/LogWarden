@@ -3,42 +3,56 @@ from pydantic import BaseModel
 import httpx
 import os
 import json
+import hashlib
+from cvss_calculator import calculate_severity, get_severity_description
 
 router = APIRouter()
 
 OLLAMA_HOST = os.getenv("OLLAMA_HOST", "http://localhost:11434")
+
+# Simple in-memory cache for analysis results
+analysis_cache = {}
 
 class AnalysisRequest(BaseModel):
     log_message: str
     source: str
     context: str = ""
 
+def get_cache_key(log_message: str, source: str) -> str:
+    """Generate cache key from log message and source"""
+    return hashlib.md5(f"{source}:{log_message}".encode()).hexdigest()
+
 @router.post("/analyze")
 async def analyze_security_event(request: AnalysisRequest):
-    # Interaction with Ollama
-    # Model: qwen2.5:1.5b
+    # Check cache first for faster response
+    cache_key = get_cache_key(request.log_message, request.source)
+    if cache_key in analysis_cache:
+        return analysis_cache[cache_key]
     
-    system_prompt = """You are LogWarden, an elite AI Security Officer specializing in Threat Detection and Incident Response.
+    # Calculate severity using CVSS before calling AI (for speed)
+    log_type = "INFO"  # Default
+    if "error" in request.log_message.lower() or "fail" in request.log_message.lower():
+        log_type = "ERROR"
+    if "critical" in request.log_message.lower() or "brute" in request.log_message.lower():
+        log_type = "CRITICAL"
     
-    Your goal is to analyze the provided log entry and provide actionable security insights.
+    severity, confidence = calculate_severity(
+        log_type=log_type,
+        keywords=[request.log_message, request.source]
+    )
     
-    **Analysis Guidelines:**
-    1. **OWASP Alignment**: Map the event to relevant OWASP Top 10 risks (e.g., Injection, Broken Access Control, Security Misconfiguration) if applicable.
-    2. **Root Cause**: Explain *why* this happened in technical terms.
-    3. **Remediation**: Provide specific, copy-pasteable shell commands (e.g., `iptables`, `chmod`, `systemctl`) or configuration changes to fix the issue.
-    
-    **Response Format (JSON Only):**
-    {
-        "severity": "CRITICAL" | "HIGH" | "MEDIUM" | "LOW",
-        "confidence": <0-100>,
-        "root_cause": "Detailed explanation...",
-        "remediation": ["Step 1: description", "Step 2: command"]
-    }
-    
-    Do not include markdown formatting like ```json. Just return the raw JSON.
-    """
-    
-    user_prompt = f"Log Source: {request.source}\nLog Message: {request.log_message}\nContext: {request.context}"
+    # Optimized, concise system prompt for faster inference
+    system_prompt = """You are LogWarden AI Security Analyst. Analyze logs and provide concise security insights.
+
+Response format (JSON only, no markdown):
+{
+    "root_cause": "Brief technical explanation (max 2 sentences)",
+    "remediation": ["Action 1", "Action 2", "Action 3"]
+}
+
+Focus on actionable remediation steps. Be specific and concise."""
+
+    user_prompt = f"Source: {request.source}\nLog: {request.log_message}"
 
     try:
         async with httpx.AsyncClient() as client:
@@ -48,20 +62,56 @@ async def analyze_security_event(request: AnalysisRequest):
                     "model": "qwen2.5:1.5b",
                     "prompt": f"{system_prompt}\n\n{user_prompt}",
                     "stream": False,
-                    "format": "json" 
+                    "format": "json",
+                    "options": {
+                        "temperature": 0.3,  # Lower temperature for faster, more consistent responses
+                        "num_predict": 200   # Limit response length for speed
+                    }
                 },
-                timeout=30.0
+                timeout=10.0  # Reduced timeout for faster failure
             )
             
             if response.status_code == 200:
                 result = response.json()
-                # Parse the JSON from the model's response
                 try:
-                    analysis = json.loads(result.get("response", "{}"))
-                    return analysis
+                    ai_analysis = json.loads(result.get("response", "{}"))
+                    
+                    # Combine CVSS scoring with AI analysis
+                    final_analysis = {
+                        "severity": severity,
+                        "confidence": confidence,
+                        "root_cause": ai_analysis.get("root_cause", "Security event detected"),
+                        "remediation": ai_analysis.get("remediation", ["Review logs", "Investigate source", "Apply security patches"])
+                    }
+                    
+                    # Cache the result
+                    analysis_cache[cache_key] = final_analysis
+                    
+                    return final_analysis
                 except json.JSONDecodeError:
-                    return {"error": "Failed to parse AI response", "raw": result.get("response")}
+                    # Fallback if AI fails to parse
+                    fallback = {
+                        "severity": severity,
+                        "confidence": confidence,
+                        "root_cause": f"{get_severity_description(severity)}: {request.log_message[:100]}",
+                        "remediation": ["Review event details", "Check system logs", "Apply security best practices"]
+                    }
+                    return fallback
             else:
-                return {"error": f"Ollama error: {response.text}"}
+                # Fallback on API error
+                return {
+                    "severity": severity,
+                    "confidence": confidence,
+                    "root_cause": f"Event classified as {severity} based on log analysis",
+                    "remediation": ["Manual investigation required", "Review event context"]
+                }
     except Exception as e:
-        return {"error": str(e)}
+        # Fallback on exception
+        return {
+            "severity": severity,
+            "confidence": confidence,
+            "root_cause": f"Analysis unavailable. Event severity: {severity}",
+            "remediation": ["System analysis pending", "Review logs manually"],
+            "error": str(e)
+        }
+
