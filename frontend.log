@@ -1,0 +1,45 @@
+
+> dashboard@0.1.0 dev
+> next dev
+
+   ▲ Next.js 16.0.6 (Turbopack)
+   - Local:         http://localhost:3000
+   - Network:       http://10.39.0.124:3000
+
+ ✓ Starting...
+ ✓ Ready in 576ms
+ GET /auth/register 200 in 1041ms (compile: 960ms, render: 81ms)
+The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+ GET /dashboard 200 in 2.2s (compile: 2.1s, render: 113ms)
+ GET /dashboard 200 in 1858ms (compile: 1734ms, render: 125ms)
+ GET /auth/login 200 in 269ms (compile: 256ms, render: 12ms)
+ GET /dashboard 200 in 35ms (compile: 18ms, render: 16ms)
+ GET /logs 200 in 495ms (compile: 465ms, render: 31ms)
+ GET /dashboard 200 in 26ms (compile: 9ms, render: 18ms)
+ GET /logs 200 in 28ms (compile: 13ms, render: 15ms)
+ GET /dashboard 200 in 39ms (compile: 19ms, render: 21ms)
+ GET /dashboard/users/admin 200 in 702ms (compile: 690ms, render: 12ms)
+The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+ GET /dashboard 200 in 635ms (compile: 283ms, render: 352ms)

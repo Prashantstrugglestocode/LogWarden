@@ -22,6 +22,47 @@ def get_cache_key(log_message: str, source: str) -> str:
     """Generate cache key from log message and source"""
     return hashlib.md5(f"{source}:{log_message}".encode()).hexdigest()
 
+
+
+
+# Add parent directory to path to import ai_engine
+import sys
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+try:
+    from ai_engine.engine import AIEngine
+    print("Initializing AI Engine in Agent...")
+    ai_engine = AIEngine()
+except Exception as e:
+    print(f"Failed to initialize AI Engine in Agent: {e}")
+    ai_engine = None
+
+# Import Playbooks
+try:
+    from .playbooks import get_playbook
+except ImportError:
+    # Fallback if relative import fails (e.g. running directly)
+    from playbooks import get_playbook
+
+class LearnRequest(BaseModel):
+    log_message: str
+    is_threat: bool
+    severity: str = "Medium"
+    remediation: str = "None"
+
+@router.post("/learn")
+async def learn_from_log(request: LearnRequest):
+    if not ai_engine:
+        return {"status": "error", "message": "AI Engine not available"}
+    
+    result = ai_engine.learn_log(
+        text=request.log_message,
+        is_threat=request.is_threat,
+        severity=request.severity,
+        remediation=request.remediation
+    )
+    return result
+
 @router.post("/analyze")
 async def analyze_security_event(request: AnalysisRequest):
     # Check cache first for faster response
@@ -29,8 +70,8 @@ async def analyze_security_event(request: AnalysisRequest):
     if cache_key in analysis_cache:
         return analysis_cache[cache_key]
     
-    # Calculate severity using CVSS before calling AI (for speed)
-    log_type = "INFO"  # Default
+    # Calculate severity using CVSS (fallback/initial)
+    log_type = "INFO"
     if "error" in request.log_message.lower() or "fail" in request.log_message.lower():
         log_type = "ERROR"
     if "critical" in request.log_message.lower() or "brute" in request.log_message.lower():
@@ -40,78 +81,41 @@ async def analyze_security_event(request: AnalysisRequest):
         log_type=log_type,
         keywords=[request.log_message, request.source]
     )
-    
-    # Optimized, concise system prompt for faster inference
-    system_prompt = """You are LogWarden AI Security Analyst. Analyze logs and provide concise security insights.
 
-Response format (JSON only, no markdown):
-{
-    "root_cause": "Brief technical explanation (max 2 sentences)",
-    "remediation": ["Action 1", "Action 2", "Action 3"]
-}
-
-Focus on actionable remediation steps. Be specific and concise."""
-
-    user_prompt = f"Source: {request.source}\nLog: {request.log_message}"
-
-    try:
-        async with httpx.AsyncClient() as client:
-            response = await client.post(
-                f"{OLLAMA_HOST}/api/generate",
-                json={
-                    "model": "qwen2.5:1.5b",
-                    "prompt": f"{system_prompt}\n\n{user_prompt}",
-                    "stream": False,
-                    "format": "json",
-                    "options": {
-                        "temperature": 0.3,  # Lower temperature for faster, more consistent responses
-                        "num_predict": 200   # Limit response length for speed
-                    }
-                },
-                timeout=10.0  # Reduced timeout for faster failure
-            )
+    # Use RAG Engine if available
+    if ai_engine:
+        try:
+            analysis = ai_engine.analyze_log(request.log_message)
             
-            if response.status_code == 200:
-                result = response.json()
-                try:
-                    ai_analysis = json.loads(result.get("response", "{}"))
-                    
-                    # Combine CVSS scoring with AI analysis
-                    final_analysis = {
-                        "severity": severity,
-                        "confidence": confidence,
-                        "root_cause": ai_analysis.get("root_cause", "Security event detected"),
-                        "remediation": ai_analysis.get("remediation", ["Review logs", "Investigate source", "Apply security patches"])
-                    }
-                    
-                    # Cache the result
-                    analysis_cache[cache_key] = final_analysis
-                    
-                    return final_analysis
-                except json.JSONDecodeError:
-                    # Fallback if AI fails to parse
-                    fallback = {
-                        "severity": severity,
-                        "confidence": confidence,
-                        "root_cause": f"{get_severity_description(severity)}: {request.log_message[:100]}",
-                        "remediation": ["Review event details", "Check system logs", "Apply security best practices"]
-                    }
-                    return fallback
-            else:
-                # Fallback on API error
-                return {
-                    "severity": severity,
-                    "confidence": confidence,
-                    "root_cause": f"Event classified as {severity} based on log analysis",
-                    "remediation": ["Manual investigation required", "Review event context"]
+            # If RAG finds a threat, use its findings ENRICHED with Playbooks
+            if analysis.get("is_threat"):
+                matched_sig = analysis.get('matched_signature', 'Unknown')
+                
+                # Get Expert Playbook based on the signature/threat type
+                playbook = get_playbook(matched_sig)
+                
+                final_analysis = {
+                    "severity": analysis.get("severity", severity),
+                    "confidence": analysis.get("confidence", confidence),
+                    "root_cause": f"{playbook['root_cause']} (Matched: {matched_sig})",
+                    "remediation": playbook['remediation'], # Use detailed steps from playbook
+                    "title": playbook['title']
                 }
-    except Exception as e:
-        # Fallback on exception
-        return {
-            "severity": severity,
-            "confidence": confidence,
-            "root_cause": f"Analysis unavailable. Event severity: {severity}",
-            "remediation": ["System analysis pending", "Review logs manually"],
-            "error": str(e)
-        }
+                analysis_cache[cache_key] = final_analysis
+                return final_analysis
+            else:
+                # If RAG says safe, but CVSS says high severity, we might want to trust CVSS or return "Safe"
+                # For now, let's return a "Safe" or "Info" response if RAG doesn't flag it, 
+                # but keep CVSS severity if it's high to be safe.
+                final_analysis = {
+                    "severity": severity,
+                    "confidence": "Medium", # Lower confidence if RAG didn't match
+                    "root_cause": "No known threat signature matched.",
+                    "remediation": ["Monitor for anomalies"]
+                }
+                analysis_cache[cache_key] = final_analysis
+                return final_analysis
 
+        except Exception as e:
+            print(f"RAG Analysis failed: {e}")
+            # Fall through to fallback
