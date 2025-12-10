@@ -8,8 +8,8 @@ class AIEngine:
         
     def analyze_log(self, log_text):
         """
-        Analyzes a log entry using RAG.
-        Returns a dict with threat assessment.
+        Retrieves context for a log entry using RAG.
+        Returns the closest match from the VectorDB (or None).
         """
         # 1. Embed the log
         vector = self.embedder.embed(log_text)
@@ -17,36 +17,7 @@ class AIEngine:
         # 2. Query the DB
         result = self.db.query_log(vector)
         
-        if not result:
-            return {"is_threat": False, "reason": "No match found"}
-            
-        # 3. Check similarity threshold
-        # ChromaDB returns distance (lower is better). 
-        # For cosine distance, 0 is identical, 2 is opposite.
-        # Let's say < 0.4 is a strong match.
-        distance = result['distance']
-        threshold = 0.4
-        
-        if distance < threshold:
-            return {
-                "is_threat": True,
-                "confidence": "High",
-                "matched_signature": result['document'],
-                "remediation": result['metadata']['remediation'],
-                "severity": result['metadata']['severity'],
-                "distance": distance
-            }
-        elif distance < 0.6:
-             return {
-                "is_threat": True,
-                "confidence": "Medium",
-                "matched_signature": result['document'],
-                "remediation": "Investigate further.",
-                "severity": "Medium",
-                "distance": distance
-            }
-            
-        return {"is_threat": False, "reason": "Low similarity", "distance": distance}
+        return result
 
     def learn_log(self, text, is_threat, severity="Medium", remediation="None"):
         """

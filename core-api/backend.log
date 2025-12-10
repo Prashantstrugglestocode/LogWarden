@@ -1,6 +1,8 @@
 Failed to send telemetry event ClientStartEvent: capture() takes 1 positional argument but 3 were given
 Failed to send telemetry event ClientCreateCollectionEvent: capture() takes 1 positional argument but 3 were given
-INFO:     Started server process [19014]
+Failed to send telemetry event ClientStartEvent: capture() takes 1 positional argument but 3 were given
+Failed to send telemetry event ClientCreateCollectionEvent: capture() takes 1 positional argument but 3 were given
+INFO:     Started server process [52770]
 INFO:     Waiting for application startup.
 INFO:     Application startup complete.
 INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
@@ -8,68 +10,264 @@ Initializing AI Engine...
 Loading embedding model: all-MiniLM-L6-v2...
 Model loaded.
 AI Engine initialized.
-INFO:     127.0.0.1:55880 - "GET /ingest/logs?limit=20 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:55880 - "GET /ingest/logs?limit=20 HTTP/1.1" 200 OK
-Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:02<00:00,  2.38s/it]Batches: 100%|██████████| 1/1 [00:02<00:00,  2.39s/it]
+Initializing AI Engine in Agent...
+Loading embedding model: all-MiniLM-L6-v2...
+Model loaded.
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00,  3.68it/s]Batches: 100%|██████████| 1/1 [00:00<00:00,  3.68it/s]
+WARNING:chromadb.segment.impl.vector.local_persistent_hnsw:Add of existing embedding ID: 3903386219301230414
+WARNING:chromadb.segment.impl.vector.local_persistent_hnsw:Add of existing embedding ID: 3903386219301230414
 ERROR:chromadb.telemetry.product.posthog:Failed to send telemetry event CollectionQueryEvent: capture() takes 1 positional argument but 3 were given
-INFO:     127.0.0.1:55887 - "POST /ingest/logs HTTP/1.1" 200 OK
-INFO:     127.0.0.1:55893 - "GET /ingest/logs?limit=20 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:55893 - "GET /ingest/logs?limit=20 HTTP/1.1" 200 OK
-Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00,  1.81it/s]Batches: 100%|██████████| 1/1 [00:00<00:00,  1.80it/s]
-INFO:     127.0.0.1:55896 - "POST /ingest/logs HTTP/1.1" 200 OK
-Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00,  4.68it/s]Batches: 100%|██████████| 1/1 [00:00<00:00,  4.67it/s]
-INFO:     127.0.0.1:55905 - "POST /ingest/logs HTTP/1.1" 200 OK
-INFO:     127.0.0.1:55893 - "GET /ingest/logs?limit=20 HTTP/1.1" 200 OK
-Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00,  2.57it/s]Batches: 100%|██████████| 1/1 [00:00<00:00,  2.57it/s]
-INFO:     127.0.0.1:55908 - "POST /ingest/logs HTTP/1.1" 200 OK
-INFO:     127.0.0.1:55893 - "GET /ingest/logs?limit=20 HTTP/1.1" 200 OK
-Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00,  3.77it/s]Batches: 100%|██████████| 1/1 [00:00<00:00,  3.76it/s]
-INFO:     127.0.0.1:55916 - "POST /ingest/logs HTTP/1.1" 200 OK
-INFO:     127.0.0.1:55893 - "GET /ingest/logs?limit=20 HTTP/1.1" 200 OK
-Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 19.92it/s]
-INFO:     127.0.0.1:55920 - "POST /ingest/logs HTTP/1.1" 200 OK
-INFO:     127.0.0.1:55893 - "GET /ingest/logs?limit=20 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:55893 - "GET /ingest/logs?limit=20 HTTP/1.1" 200 OK
-Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 18.33it/s]
-INFO:     127.0.0.1:55927 - "POST /ingest/logs HTTP/1.1" 200 OK
-INFO:     127.0.0.1:55893 - "GET /ingest/logs?limit=20 HTTP/1.1" 200 OK
-Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 61.17it/s]
-INFO:     127.0.0.1:55931 - "POST /ingest/logs HTTP/1.1" 200 OK
-Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 15.91it/s]
-INFO:     127.0.0.1:55939 - "POST /ingest/logs HTTP/1.1" 200 OK
-INFO:     127.0.0.1:55940 - "GET /ingest/logs?limit=20 HTTP/1.1" 200 OK
-Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 18.47it/s]
-INFO:     127.0.0.1:55944 - "POST /ingest/logs HTTP/1.1" 200 OK
-INFO:     127.0.0.1:55940 - "GET /ingest/logs?limit=20 HTTP/1.1" 200 OK
-Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 16.99it/s]
-INFO:     127.0.0.1:55951 - "POST /ingest/logs HTTP/1.1" 200 OK
-INFO:     127.0.0.1:55940 - "GET /ingest/logs?limit=20 HTTP/1.1" 200 OK
-Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 13.01it/s]
-INFO:     127.0.0.1:55953 - "POST /ingest/logs HTTP/1.1" 200 OK
-INFO:     127.0.0.1:55940 - "GET /ingest/logs?limit=20 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:55940 - "GET /ingest/logs?limit=20 HTTP/1.1" 200 OK
-Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 14.03it/s]
-INFO:     127.0.0.1:55959 - "POST /ingest/logs HTTP/1.1" 200 OK
-INFO:     127.0.0.1:55940 - "GET /ingest/logs?limit=20 HTTP/1.1" 200 OK
-Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 14.78it/s]
-INFO:     127.0.0.1:55962 - "POST /ingest/logs HTTP/1.1" 200 OK
-INFO:     127.0.0.1:55940 - "GET /ingest/logs?limit=20 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:55940 - "GET /ingest/logs?limit=20 HTTP/1.1" 200 OK
-Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 14.97it/s]
-INFO:     127.0.0.1:55968 - "POST /ingest/logs HTTP/1.1" 200 OK
-Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 15.02it/s]
-INFO:     127.0.0.1:55973 - "POST /ingest/logs HTTP/1.1" 200 OK
-Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 16.29it/s]
-INFO:     127.0.0.1:55976 - "POST /ingest/logs HTTP/1.1" 200 OK
-INFO:     127.0.0.1:55977 - "GET /ingest/logs?limit=20 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:55977 - "GET /ingest/logs?limit=20 HTTP/1.1" 200 OK
-Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 16.62it/s]
-INFO:     127.0.0.1:55984 - "POST /ingest/logs HTTP/1.1" 200 OK
-INFO:     127.0.0.1:55977 - "GET /ingest/logs?limit=20 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:55977 - "GET /ingest/logs?limit=20 HTTP/1.1" 200 OK
-INFO:     Shutting down
-INFO:     Waiting for application shutdown.
-INFO:     Application shutdown complete.
-INFO:     Finished server process [19014]
-/opt/anaconda3/lib/python3.11/multiprocessing/resource_tracker.py:254: UserWarning: resource_tracker: There appear to be 1 leaked semaphore objects to clean up at shutdown
-  warnings.warn('resource_tracker: There appear to be %d '
+INFO:     127.0.0.1:60732 - "POST /ingest/logs HTTP/1.1" 200 OK
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 10.56it/s]
+INFO:     127.0.0.1:60738 - "POST /ingest/logs HTTP/1.1" 200 OK
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 13.22it/s]
+INFO:     127.0.0.1:60743 - "POST /ingest/logs HTTP/1.1" 200 OK
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 12.93it/s]
+INFO:     127.0.0.1:60748 - "POST /ingest/logs HTTP/1.1" 200 OK
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 21.68it/s]
+INFO:     127.0.0.1:60753 - "POST /ingest/logs HTTP/1.1" 200 OK
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 17.37it/s]
+INFO:     127.0.0.1:60755 - "POST /ingest/logs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60756 - "GET /ingest/logs?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60756 - "GET /ingest/logs?limit=50 HTTP/1.1" 200 OK
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 17.57it/s]
+INFO:     127.0.0.1:60761 - "POST /ingest/logs HTTP/1.1" 200 OK
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 25.51it/s]
+INFO:     127.0.0.1:60763 - "POST /ingest/logs HTTP/1.1" 200 OK
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 38.06it/s]
+INFO:     127.0.0.1:60766 - "POST /ingest/logs HTTP/1.1" 200 OK
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 49.17it/s]
+INFO:     127.0.0.1:60768 - "POST /ingest/logs HTTP/1.1" 200 OK
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 64.83it/s]
+INFO:     127.0.0.1:60770 - "POST /ingest/logs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60756 - "GET /ingest/logs?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60757 - "GET /ingest/logs?limit=20 HTTP/1.1" 200 OK
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 59.36it/s]
+INFO:     127.0.0.1:60776 - "POST /ingest/logs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60756 - "GET /agent/users/risk HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60756 - "OPTIONS /agent/analyze HTTP/1.1" 200 OK
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 66.64it/s]
+Tier 2 Hit: Matched 'Failed password for root from 192.168.1.100 port 22 ssh2' with distance 0.2376068850374739
+INFO:     127.0.0.1:60756 - "POST /agent/analyze HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60756 - "GET /ingest/logs?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60756 - "GET /ingest/logs?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60756 - "GET /agent/users/risk HTTP/1.1" 200 OK
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00,  9.12it/s]Batches: 100%|██████████| 1/1 [00:00<00:00,  9.08it/s]
+INFO:     127.0.0.1:60778 - "POST /ingest/logs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60756 - "GET /ingest/logs?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60756 - "GET /ingest/logs?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60756 - "GET /agent/users/risk HTTP/1.1" 200 OK
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 10.33it/s]
+INFO:     127.0.0.1:60780 - "POST /ingest/logs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60756 - "GET /ingest/logs?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60756 - "GET /ingest/logs?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60756 - "GET /agent/users/risk HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60756 - "GET /ingest/logs?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60756 - "GET /ingest/logs?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60756 - "GET /agent/users/risk HTTP/1.1" 200 OK
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 18.63it/s]
+INFO:     127.0.0.1:60789 - "POST /ingest/logs HTTP/1.1" 200 OK
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 40.13it/s]
+INFO:     127.0.0.1:60791 - "POST /ingest/logs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60756 - "GET /ingest/logs?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60756 - "GET /ingest/logs?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60756 - "GET /agent/users/risk HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60756 - "GET /ingest/logs?limit=50 HTTP/1.1" 200 OK
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 18.14it/s]
+INFO:     127.0.0.1:60796 - "POST /ingest/logs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60756 - "GET /ingest/logs?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60756 - "GET /agent/users/root/graph HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60756 - "GET /agent/users/root/graph HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60756 - "GET /agent/users/risk HTTP/1.1" 200 OK
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 28.77it/s]
+INFO:     127.0.0.1:60801 - "POST /ingest/logs HTTP/1.1" 200 OK
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 65.64it/s]
+INFO:     127.0.0.1:60808 - "POST /ingest/logs HTTP/1.1" 200 OK
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 100.89it/s]
+INFO:     127.0.0.1:60812 - "POST /ingest/logs HTTP/1.1" 200 OK
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 61.82it/s]
+INFO:     127.0.0.1:60814 - "POST /ingest/logs HTTP/1.1" 200 OK
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 56.48it/s]
+INFO:     127.0.0.1:60816 - "POST /ingest/logs HTTP/1.1" 200 OK
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 23.07it/s]
+INFO:     127.0.0.1:60818 - "POST /ingest/logs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60756 - "GET /ingest/logs?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60756 - "GET /ingest/logs?limit=50 HTTP/1.1" 200 OK
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 10.49it/s]
+INFO:     127.0.0.1:60824 - "POST /ingest/logs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60756 - "GET /ingest/logs?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60825 - "GET /ingest/logs?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60756 - "GET /agent/users/risk HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60756 - "GET /ingest/logs?limit=100 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60825 - "GET /ingest/logs?limit=100 HTTP/1.1" 200 OK
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 33.31it/s]
+INFO:     127.0.0.1:60828 - "POST /ingest/logs HTTP/1.1" 200 OK
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00,  9.31it/s]Batches: 100%|██████████| 1/1 [00:00<00:00,  9.28it/s]
+INFO:     127.0.0.1:60833 - "POST /ingest/logs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60825 - "GET /ingest/logs?limit=100 HTTP/1.1" 200 OK
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00,  7.90it/s]Batches: 100%|██████████| 1/1 [00:00<00:00,  7.87it/s]
+INFO:     127.0.0.1:60836 - "POST /ingest/logs HTTP/1.1" 200 OK
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00,  9.89it/s]Batches: 100%|██████████| 1/1 [00:00<00:00,  9.86it/s]
+INFO:     127.0.0.1:60839 - "POST /ingest/logs HTTP/1.1" 200 OK
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 28.41it/s]
+INFO:     127.0.0.1:60844 - "POST /ingest/logs HTTP/1.1" 200 OK
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 35.82it/s]
+INFO:     127.0.0.1:60846 - "POST /ingest/logs HTTP/1.1" 200 OK
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 40.14it/s]
+INFO:     127.0.0.1:60848 - "POST /ingest/logs HTTP/1.1" 200 OK
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 37.97it/s]
+INFO:     127.0.0.1:60850 - "POST /ingest/logs HTTP/1.1" 200 OK
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 35.52it/s]
+INFO:     127.0.0.1:60852 - "POST /ingest/logs HTTP/1.1" 200 OK
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 25.70it/s]
+INFO:     127.0.0.1:60854 - "POST /ingest/logs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60856 - "GET /ingest/logs?limit=100 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60856 - "GET /ingest/logs?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60857 - "GET /ingest/logs?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60856 - "GET /ingest/logs?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60857 - "GET /ingest/logs?limit=20 HTTP/1.1" 200 OK
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 11.53it/s]
+INFO:     127.0.0.1:60861 - "POST /ingest/logs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60857 - "POST /agent/analyze HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60856 - "GET /agent/users/risk HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60856 - "GET /ingest/logs?limit=50 HTTP/1.1" 200 OK
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 25.49it/s]
+INFO:     127.0.0.1:60866 - "POST /ingest/logs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60856 - "GET /ingest/logs?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60856 - "GET /agent/users/risk HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60856 - "GET /ingest/logs?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60856 - "GET /ingest/logs?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60856 - "GET /agent/users/risk HTTP/1.1" 200 OK
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 33.30it/s]
+INFO:     127.0.0.1:60868 - "POST /ingest/logs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60856 - "OPTIONS /remediate HTTP/1.1" 200 OK
+INFO:remediation:Received remediation request: block_ip on 192.168.1.105
+WARNING:remediation:SIMULATION: Blocking IP 192.168.1.105 via firewall...
+INFO:     127.0.0.1:60856 - "POST /remediate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60856 - "GET /ingest/logs?limit=50 HTTP/1.1" 200 OK
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 69.67it/s]
+INFO:     127.0.0.1:60870 - "POST /ingest/logs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60856 - "GET /ingest/logs?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60856 - "GET /agent/users/risk HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60856 - "GET /ingest/logs?limit=50 HTTP/1.1" 200 OK
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 16.52it/s]
+Tier 2 Hit: Matched 'SQL Injection detected in query parameter: UNION SELECT * FROM users' with distance 0.0
+INFO:     127.0.0.1:60856 - "POST /agent/analyze HTTP/1.1" 200 OK
+INFO:remediation:Received remediation request: block_ip on 192.168.1.105
+WARNING:remediation:SIMULATION: Blocking IP 192.168.1.105 via firewall...
+INFO:     127.0.0.1:60856 - "POST /remediate HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60856 - "GET /ingest/logs?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60856 - "GET /ingest/logs?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60856 - "GET /agent/users/risk HTTP/1.1" 200 OK
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 24.09it/s]
+INFO:     127.0.0.1:60876 - "POST /ingest/logs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60856 - "GET /ingest/logs?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60856 - "GET /ingest/logs?limit=20 HTTP/1.1" 200 OK
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00,  4.84it/s]Batches: 100%|██████████| 1/1 [00:00<00:00,  4.84it/s]
+INFO:     127.0.0.1:60878 - "POST /ingest/logs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60856 - "GET /agent/users/risk HTTP/1.1" 200 OK
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 35.77it/s]
+INFO:     127.0.0.1:60880 - "POST /ingest/logs HTTP/1.1" 200 OK
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 45.44it/s]
+INFO:     127.0.0.1:60882 - "POST /ingest/logs HTTP/1.1" 200 OK
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 24.00it/s]
+INFO:     127.0.0.1:60887 - "POST /ingest/logs HTTP/1.1" 200 OK
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 44.67it/s]
+INFO:     127.0.0.1:60889 - "POST /ingest/logs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60856 - "GET /ingest/logs?limit=50 HTTP/1.1" 200 OK
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 83.81it/s]
+INFO:     127.0.0.1:60893 - "POST /ingest/logs HTTP/1.1" 200 OK
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 63.19it/s]
+INFO:     127.0.0.1:60896 - "POST /ingest/logs HTTP/1.1" 200 OK
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 102.47it/s]
+INFO:     127.0.0.1:60898 - "POST /ingest/logs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60856 - "GET /agent/users/root/graph HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60856 - "GET /agent/users/root/graph HTTP/1.1" 200 OK
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 71.19it/s]
+INFO:     127.0.0.1:60902 - "POST /ingest/logs HTTP/1.1" 200 OK
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 63.73it/s]
+INFO:     127.0.0.1:60904 - "POST /ingest/logs HTTP/1.1" 200 OK
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 46.90it/s]
+INFO:     127.0.0.1:60906 - "POST /ingest/logs HTTP/1.1" 200 OK
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 86.43it/s]
+INFO:     127.0.0.1:60908 - "POST /ingest/logs HTTP/1.1" 200 OK
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 73.29it/s]
+INFO:     127.0.0.1:60910 - "POST /ingest/logs HTTP/1.1" 200 OK
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 23.66it/s]
+INFO:     127.0.0.1:60915 - "POST /ingest/logs HTTP/1.1" 200 OK
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 23.36it/s]
+INFO:     127.0.0.1:60918 - "POST /ingest/logs HTTP/1.1" 200 OK
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 25.39it/s]
+INFO:     127.0.0.1:60923 - "POST /ingest/logs HTTP/1.1" 200 OK
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 63.65it/s]
+INFO:     127.0.0.1:60925 - "POST /ingest/logs HTTP/1.1" 200 OK
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 71.31it/s]
+INFO:     127.0.0.1:60927 - "POST /ingest/logs HTTP/1.1" 200 OK
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 58.63it/s]
+INFO:     127.0.0.1:60929 - "POST /ingest/logs HTTP/1.1" 200 OK
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 65.09it/s]
+INFO:     127.0.0.1:60931 - "POST /ingest/logs HTTP/1.1" 200 OK
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 57.86it/s]
+INFO:     127.0.0.1:60933 - "POST /ingest/logs HTTP/1.1" 200 OK
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 85.88it/s]
+INFO:     127.0.0.1:60935 - "POST /ingest/logs HTTP/1.1" 200 OK
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 27.86it/s]
+INFO:     127.0.0.1:60940 - "POST /ingest/logs HTTP/1.1" 200 OK
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 21.93it/s]
+INFO:     127.0.0.1:60942 - "POST /ingest/logs HTTP/1.1" 200 OK
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 19.13it/s]
+INFO:     127.0.0.1:60944 - "POST /ingest/logs HTTP/1.1" 200 OK
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 76.70it/s]
+INFO:     127.0.0.1:60946 - "POST /ingest/logs HTTP/1.1" 200 OK
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 106.62it/s]
+INFO:     127.0.0.1:60951 - "POST /ingest/logs HTTP/1.1" 200 OK
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 65.51it/s]
+INFO:     127.0.0.1:60953 - "POST /ingest/logs HTTP/1.1" 200 OK
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 74.77it/s]
+INFO:     127.0.0.1:60955 - "POST /ingest/logs HTTP/1.1" 200 OK
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 65.39it/s]
+INFO:     127.0.0.1:60958 - "POST /ingest/logs HTTP/1.1" 200 OK
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 68.34it/s]
+INFO:     127.0.0.1:60960 - "POST /ingest/logs HTTP/1.1" 200 OK
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 23.46it/s]
+INFO:     127.0.0.1:60964 - "POST /ingest/logs HTTP/1.1" 200 OK
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 24.25it/s]
+INFO:     127.0.0.1:60969 - "POST /ingest/logs HTTP/1.1" 200 OK
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 23.87it/s]
+INFO:     127.0.0.1:60971 - "POST /ingest/logs HTTP/1.1" 200 OK
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 71.86it/s]
+INFO:     127.0.0.1:60973 - "POST /ingest/logs HTTP/1.1" 200 OK
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 25.26it/s]
+INFO:     127.0.0.1:60978 - "POST /ingest/logs HTTP/1.1" 200 OK
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 101.90it/s]
+INFO:     127.0.0.1:60981 - "POST /ingest/logs HTTP/1.1" 200 OK
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 71.61it/s]
+INFO:     127.0.0.1:60983 - "POST /ingest/logs HTTP/1.1" 200 OK
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 63.88it/s]
+INFO:     127.0.0.1:60985 - "POST /ingest/logs HTTP/1.1" 200 OK
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 69.20it/s]
+INFO:     127.0.0.1:60987 - "POST /ingest/logs HTTP/1.1" 200 OK
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 80.39it/s]
+INFO:     127.0.0.1:60989 - "POST /ingest/logs HTTP/1.1" 200 OK
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 66.57it/s]
+INFO:     127.0.0.1:60991 - "POST /ingest/logs HTTP/1.1" 200 OK
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 68.75it/s]
+INFO:     127.0.0.1:60993 - "POST /ingest/logs HTTP/1.1" 200 OK
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 72.49it/s]
+INFO:     127.0.0.1:60995 - "POST /ingest/logs HTTP/1.1" 200 OK
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 66.41it/s]
+INFO:     127.0.0.1:60997 - "POST /ingest/logs HTTP/1.1" 200 OK
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 93.01it/s]
+INFO:     127.0.0.1:61000 - "POST /ingest/logs HTTP/1.1" 200 OK
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 22.53it/s]
+INFO:     127.0.0.1:61002 - "POST /ingest/logs HTTP/1.1" 200 OK
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 23.88it/s]
+INFO:     127.0.0.1:61008 - "POST /ingest/logs HTTP/1.1" 200 OK
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 68.07it/s]
+INFO:     127.0.0.1:61010 - "POST /ingest/logs HTTP/1.1" 200 OK
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 22.57it/s]
+INFO:     127.0.0.1:61016 - "POST /ingest/logs HTTP/1.1" 200 OK
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 15.36it/s]
+INFO:     127.0.0.1:61021 - "POST /ingest/logs HTTP/1.1" 200 OK
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 11.26it/s]
+INFO:     127.0.0.1:61023 - "POST /ingest/logs HTTP/1.1" 200 OK

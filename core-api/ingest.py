@@ -40,11 +40,14 @@ async def ingest_logs(log: LogEntry, db: Session = Depends(get_db)):
     if ai_engine:
         try:
             analysis = ai_engine.analyze_log(log.message)
-            if analysis.get("is_threat"):
-                is_threat = True
-                threat_confidence = analysis.get("confidence")
-                threat_signature = analysis.get("matched_signature")
-                remediation = analysis.get("remediation")
+            # Only trust high confidence matches (Tier 2) for ingestion
+            if analysis and analysis['distance'] < 0.4:
+                meta = analysis['metadata']
+                if meta.get('is_threat') == 'True':
+                    is_threat = True
+                    threat_confidence = "High" # We trust the DB match
+                    threat_signature = analysis.get("document")
+                    remediation = meta.get("remediation")
         except Exception as e:
             print(f"Error during AI analysis: {e}")
 
