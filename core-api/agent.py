@@ -93,6 +93,53 @@ async def query_ollama(prompt: str, model: str = "qwen2.5:1.5b") -> dict:
         print(f"Ollama Connection Failed: {e}")
         return None
 
+import re
+
+def _get_user_context(username: str) -> dict:
+    """
+    Helper to simulate retrieving User Context from Graph API.
+    """
+    is_admin = "admin" in username.lower() or "root" in username.lower()
+    
+    return {
+        "displayName": username.split('@')[0].title(),
+        "jobTitle": "Administrator" if is_admin else "Employee",
+        "is_admin": is_admin,
+        "riskLevel": "high" if "alice" in username or "admin" in username else "low",
+        "mfaEnabled": True if is_admin else False
+    }
+
+def _check_ip_reputation(ip: str) -> dict:
+    """
+    Helper to simulate checking IP Reputation.
+    """
+    # Mock malicious IPs for demo
+    if ip.startswith("51.") or ip.startswith("185."):
+        return {"score": 90, "status": "Malicious", "asn": "BadActor Network"}
+    if ip.startswith("192.168.") or ip.startswith("10.") or ip.startswith("127."):
+        return {"score": 0, "status": "Safe (Private)", "asn": "Internal"}
+    return {"score": 20, "status": "Unknown/Neutral", "asn": "ISP"}
+
+def _extract_entities(log_message: str):
+    """
+    Extracts IP addresses and potential Usernames/Emails from log text.
+    """
+    # Regex for IPv4
+    ip_match = re.search(r'\b(?:\d{1,3}\.){3}\d{1,3}\b', log_message)
+    ip = ip_match.group(0) if ip_match else None
+    
+    # Simple Regex for Email/User
+    user_match = re.search(r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b', log_message)
+    user = user_match.group(0) if user_match else None
+    
+    # Fallback for simple "user root" or "user admin" patterns common in logs
+    if not user:
+        simple_user_match = re.search(r'user\s+(\w+)', log_message, re.IGNORECASE)
+        if simple_user_match:
+            user = simple_user_match.group(1)
+            
+    return ip, user
+
 @router.post("/analyze")
 async def analyze_security_event(request: AnalysisRequest):
     # Tier 1: Memory (Cache) - Check cache first for faster response
@@ -127,8 +174,6 @@ async def analyze_security_event(request: AnalysisRequest):
             context_str = "No similar past incidents found."
             
             # Tier 2: Knowledge Base (High Confidence Match)
-            # If we have a very strong match (distance < 0.35), trust the DB. 
-            # This saves GPU reliability and time.
             if retrieval and retrieval['distance'] < 0.35:
                 # High confidence match found!
                 matched_sig = retrieval['document']
@@ -149,44 +194,78 @@ async def analyze_security_event(request: AnalysisRequest):
                 return final_analysis
 
             # Tier 3: Expert Analysis (Generative AI)
-            # If we are here, it means we didn't find an exact match.
-            # We will ask the LLM to analyze it, providing any "weak" matches as context.
             if retrieval:
                 context_str = f"Found a somewhat similar past log (Distance {retrieval['distance']:.2f}):\nLog: {retrieval['document']}\nVerdict: {retrieval['metadata'].get('type', 'Unknown')}\nRemediation: {retrieval['metadata'].get('remediation', 'None')}"
             
             print(f"Tier 3 Triggered: Analyzing with Ollama... (Context: {context_str[:50]}...)")
             
-            prompt = f"""
-            Act as a Senior Security Analyst. Analyze this log for security threats.
+            # --- CONTEXT ENRICHMENT START ---
+            ip, user = _extract_entities(request.log_message)
+            entity_context = ""
             
-            New Log Entry: "{request.log_message}"
+            if user:
+                u_ctx = _get_user_context(user)
+                entity_context += f"- User '{user}': Role={u_ctx['jobTitle']}, IsAdmin={u_ctx['is_admin']}, RiskLevel={u_ctx['riskLevel']}\n"
+                
+            if ip:
+                i_ctx = _check_ip_reputation(ip)
+                entity_context += f"- IP '{ip}': Reputation Score={i_ctx['score']}/100, Status={i_ctx['status']}\n"
+            
+            if not entity_context:
+                entity_context = "- No specific entities (User/IP) extracted."
+            # --- CONTEXT ENRICHMENT END ---
+
+            # IMPROVED PROMPT: Chain-of-Thought (CoT) + Entity Context
+            prompt = f"""
+            You are a Senior Security Analyst. analyze the following log entry.
+            
+            Log: "{request.log_message}"
             Source: {request.source}
             
-            Context:
+            Entity Intelligence (Contextual Awareness):
+            {entity_context}
+            
+            Context from Knowledge Base (Past Incidents):
             {context_str}
             
-            Instructions:
-            1. Determine if this is a threat (is_threat).
-            2. Assign Severity (Low, Medium, High, Critical).
-            3. Choose immediate remediation ACTION from: ["block_ip", "disable_user", "isolate_host", "none"].
-            4. Identify the TARGET for the action (IP address or Username).
+            Your Task(Think Step-by-Step):
+            1.  **Analyze the Log:** What is happening?
+            2.  **Context Check:** Look at the 'Entity Intelligence'.
+                - If the User is an ADMIN, this is CRITICAL.
+                - If the IP has a Bad Reputation (Score > 50), this is MALICIOUS.
+            3.  **Threat Assessment:** Combine Log + Identity + Reputation.
+            4.  **Action Plan:** Should we block the IP or Disable the User?
             
-            Respond ONLY in JSON format:
+            Output strictly in this JSON format:
             {{
+                "reasoning": "Step-by-step thought process... (Mention user role/IP reputation)",
                 "is_threat": boolean,
-                "severity": "string",
-                "root_cause": "string",
+                "severity": "Low"|"Medium"|"High"|"Critical",
+                "root_cause": "Short description",
                 "remediation": ["step 1", "step 2"],
                 "suggested_action": "block_ip"|"disable_user"|"isolate_host"|"none",
-                "action_target": "string"
+                "action_target": "IP or Username"
             }}
             """
             
             llm_response = await query_ollama(prompt)
             
             if llm_response and 'response' in llm_response:
+                raw_text = llm_response['response']
                 try:
-                    analysis_json = json.loads(llm_response['response'])
+                    # Robust Parsing: Find JSON block if model chatted around it
+                    if "```json" in raw_text:
+                        raw_text = raw_text.split("```json")[1].split("```")[0].strip()
+                    elif "{" in raw_text:
+                        # Best effort to find the first { and last }
+                        start = raw_text.find("{")
+                        end = raw_text.rfind("}") + 1
+                        raw_text = raw_text[start:end]
+
+                    analysis_json = json.loads(raw_text)
+                    
+                    # Log the CoT reasoning for debugging
+                    print(f"🤖 AI Reasoning: {analysis_json.get('reasoning', 'No reasoning provided')}")
                     
                     final_analysis = {
                         "severity": analysis_json.get('severity', "Medium"),
@@ -197,7 +276,6 @@ async def analyze_security_event(request: AnalysisRequest):
                     }
 
                     # AUTO-REMEDIATION LOOP
-                    # If Critical/High threat, execute the action immediately
                     if analysis_json.get('is_threat') and final_analysis['severity'] in ["Critical", "High"]:
                         action = analysis_json.get('suggested_action')
                         target = analysis_json.get('action_target')
@@ -212,13 +290,10 @@ async def analyze_security_event(request: AnalysisRequest):
                                 reason=f"Auto-Triggered by High Severity AI Analysis: {final_analysis['root_cause']}"
                             )
                             rem_result = execute_remediation(rem_req)
-                            
-                            # Append remediation info to the analysis result for the dashboard
                             final_analysis["auto_remediation"] = rem_result
 
                 except json.JSONDecodeError:
                     print(f"Failed to parse LLM JSON: {llm_response['response']}")
-                    # Fallback to CVSS if JSON fails
             
         except Exception as e:
             print(f"AI Analysis failed: {e}")
@@ -292,28 +367,27 @@ def get_user_risk_profile(db: Session = Depends(get_db)):
 def get_user_graph_data(username: str):
     """
     Simulates a Microsoft Graph API response for user details.
-    Returns M365 account configuration, MFA status, and risk state.
     """
-    # Deterministic simulation based on username
-    is_admin = "admin" in username or "root" in username
+    # Use the shared helper logic
+    ctx = _get_user_context(username)
     
     # Base Profile
     profile = {
-        "displayName": username.split('@')[0].title(),
+        "displayName": ctx['displayName'],
         "userPrincipalName": username,
         "id": hashlib.md5(username.encode()).hexdigest(),
         "accountEnabled": True,
-        "jobTitle": "Administrator" if is_admin else "Employee",
+        "jobTitle": ctx['jobTitle'],
         "officeLocation": "New York, USA",
         "mobilePhone": "+1 555-0100"
     }
 
-    # Security Profile (Simulated Entra ID data)
+    # Security Profile
     security = {
-        "mfaEnabled": True if is_admin else False,
-        "mfaMethod": "Authenticator App" if is_admin else "SMS",
-        "conditionalAccess": "Report-Only" if is_admin else "Enforced",
-        "riskLevel": "high" if "alice" in username or "admin" in username else "low",
+        "mfaEnabled": ctx['mfaEnabled'],
+        "mfaMethod": "Authenticator App" if ctx['is_admin'] else "SMS",
+        "conditionalAccess": "Report-Only" if ctx['is_admin'] else "Enforced",
+        "riskLevel": ctx['riskLevel'],
         "lastPasswordChange": (datetime.utcnow() - timedelta(days=random.randint(5, 90))).isoformat(),
         "registeredDevices": random.randint(1, 3)
     }

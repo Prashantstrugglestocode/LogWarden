@@ -11,8 +11,10 @@ services:
       - DATABASE_URL=postgresql://user:password@db:5432/security_db
       - OLLAMA_HOST=http://ai-engine:11434
     depends_on:
-      - db
-      - ai-engine
+      db:
+        condition: service_healthy
+      ai-engine:
+        condition: service_healthy
     networks:
       - security-net
 
@@ -26,13 +28,11 @@ services:
       - ollama_data:/root/.ollama
     networks:
       - security-net
-    # deploy:
-    #   resources:
-    #     reservations:
-    #       devices:
-    #         - driver: nvidia
-    #           count: 1
-    #           capabilities: [gpu]
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:11434" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   # --- Database ---
   db:
@@ -48,6 +48,11 @@ services:
       - postgres_data:/var/lib/postgresql/data
     networks:
       - security-net
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U user -d security_db" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   # --- Dashboard (UI) ---
   dashboard:
