@@ -13,8 +13,14 @@ lsof -ti:8000 | xargs kill -9 2>/dev/null
 
 sleep 2
 
+# Ensure AI Model is available (Pre-pull for smooth demo)
+echo "🧠 Ensuring AI Model (Llama 3.2) is ready..."
+docker exec security-officer-ai ollama pull llama3.2 > /dev/null 2>&1 &
+
+
 # Start Backend
 echo "🔧 Starting Backend API (port 8000)..."
+export LICENSE_KEY=${LICENSE_KEY:-"LW-DEV-KEY-12345"}
 cd core-api
 source venv/bin/activate
 uvicorn main:app --host 0.0.0.0 --port 8000 > backend.log 2>&1 &

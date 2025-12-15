@@ -62,4 +62,45 @@ while true; do
     }' > /dev/null
     
   sleep 4
+
+  # 5. Data Exfiltration Attempt (User: jdoe)
+  echo "Sending Data Exfiltration Log..."
+  curl -s -X POST "$API_URL" \
+    -H "Content-Type: application/json" \
+    -d '{
+      "source": "file-server-01",
+      "timestamp": "'$(date -u +"%Y-%m-%dT%H:%M:%SZ")'",
+      "type": "WARNING",
+      "message": "User jdoe downloaded sensitive file: customer_db_dump.sql",
+      "content": {"user": "jdoe", "file": "customer_db_dump.sql", "size": "2GB"}
+    }' > /dev/null
+
+  sleep 2
+
+  # 6. Impossible Travel (User: service_account)
+  echo "Sending Impossible Travel Log..."
+  curl -s -X POST "$API_URL" \
+    -H "Content-Type: application/json" \
+    -d '{
+      "source": "azure-ad",
+      "timestamp": "'$(date -u +"%Y-%m-%dT%H:%M:%SZ")'",
+      "type": "CRITICAL",
+      "message": "User service_account logged in from Unfamiliar Location: North Korea",
+      "content": {"user": "service_account", "location": "North Korea", "prev_location": "US"}
+    }' > /dev/null
+    
+  sleep 3
+
+  # 7. Failed Login (User: admin) - Random failure
+  echo "Sending Admin Failed Login..."
+  curl -s -X POST "$API_URL" \
+    -H "Content-Type: application/json" \
+    -d '{
+      "source": "vpn-gateway",
+      "timestamp": "'$(date -u +"%Y-%m-%dT%H:%M:%SZ")'",
+      "type": "ERROR",
+      "message": "Failed login for user admin from 203.0.113.42",
+      "content": {"user": "admin", "ip": "203.0.113.42"}
+    }' > /dev/null
+
 done

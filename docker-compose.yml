@@ -10,6 +10,7 @@ services:
     environment:
       - DATABASE_URL=postgresql://user:password@db:5432/security_db
       - OLLAMA_HOST=http://ai-engine:11434
+      - LICENSE_KEY=LW-DEV-KEY-12345
     depends_on:
       db:
         condition: service_healthy
@@ -33,6 +34,10 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    deploy:
+      resources:
+        limits:
+          memory: 8G
 
   # --- Database ---
   db:

@@ -7,7 +7,7 @@ import json
 import hashlib
 import random
 from database import get_db
-from models import Log
+from models import Log, Notification, SystemConfig
 from datetime import datetime, timedelta
 from cvss_calculator import calculate_severity, get_severity_description
 
@@ -68,7 +68,7 @@ async def learn_from_log(request: LearnRequest):
     )
     return result
 
-async def query_ollama(prompt: str, model: str = "qwen2.5:1.5b") -> dict:
+async def query_ollama(prompt: str, model: str = "llama3.2") -> dict:
     """
     Queries the Ollama LLM for analysis.
     """
@@ -82,7 +82,7 @@ async def query_ollama(prompt: str, model: str = "qwen2.5:1.5b") -> dict:
                     "stream": False,
                     "format": "json" 
                 },
-                timeout=30.0
+                timeout=60.0
             )
             if response.status_code == 200:
                 return response.json()
@@ -95,15 +95,27 @@ async def query_ollama(prompt: str, model: str = "qwen2.5:1.5b") -> dict:
 
 import re
 
-def _get_user_context(username: str) -> dict:
+def _get_user_context(username: str, db: Session = None) -> dict:
     """
     Helper to simulate retrieving User Context from Graph API.
     """
     is_admin = "admin" in username.lower() or "root" in username.lower()
     
+    # Check for Graph API Key
+    has_api_key = False
+    if db:
+        config = db.query(SystemConfig).filter(SystemConfig.key == "GRAPH_API_KEY").first()
+        if config and config.value:
+            has_api_key = True
+            
+    # Simulate richer context if API key is present
+    job_title = "Administrator" if is_admin else "Employee"
+    if has_api_key and "doe" in username:
+        job_title = "Senior Developer (Graph API Verified)"
+    
     return {
         "displayName": username.split('@')[0].title(),
-        "jobTitle": "Administrator" if is_admin else "Employee",
+        "jobTitle": job_title,
         "is_admin": is_admin,
         "riskLevel": "high" if "alice" in username or "admin" in username else "low",
         "mfaEnabled": True if is_admin else False
@@ -141,7 +153,7 @@ def _extract_entities(log_message: str):
     return ip, user
 
 @router.post("/analyze")
-async def analyze_security_event(request: AnalysisRequest):
+async def analyze_security_event(request: AnalysisRequest, db: Session = Depends(get_db)):
     # Tier 1: Memory (Cache) - Check cache first for faster response
     cache_key = get_cache_key(request.log_message, request.source)
     if cache_key in analysis_cache:
@@ -204,7 +216,7 @@ async def analyze_security_event(request: AnalysisRequest):
             entity_context = ""
             
             if user:
-                u_ctx = _get_user_context(user)
+                u_ctx = _get_user_context(user, db)
                 entity_context += f"- User '{user}': Role={u_ctx['jobTitle']}, IsAdmin={u_ctx['is_admin']}, RiskLevel={u_ctx['riskLevel']}\n"
                 
             if ip:
@@ -230,22 +242,30 @@ async def analyze_security_event(request: AnalysisRequest):
             
             Your Task(Think Step-by-Step):
             1.  **Analyze the Log:** What is happening?
-            2.  **Context Check:** Look at the 'Entity Intelligence'.
-                - If the User is an ADMIN, this is CRITICAL.
-                - If the IP has a Bad Reputation (Score > 50), this is MALICIOUS.
-            3.  **Threat Assessment:** Combine Log + Identity + Reputation.
-            4.  **Action Plan:** Should we block the IP or Disable the User?
-            
-            Output strictly in this JSON format:
-            {{
-                "reasoning": "Step-by-step thought process... (Mention user role/IP reputation)",
-                "is_threat": boolean,
-                "severity": "Low"|"Medium"|"High"|"Critical",
-                "root_cause": "Short description",
-                "remediation": ["step 1", "step 2"],
-                "suggested_action": "block_ip"|"disable_user"|"isolate_host"|"none",
-                "action_target": "IP or Username"
-            }}
+    Analyze this security log step-by-step:
+    Log: "{request.log_message}"
+    Source: "{request.source}"
+    Context: {context_str}
+
+    Reasoning Process:
+    1.  What is happening? (Attack vs Normal)
+    2.  Is this a known pattern? (e.g. Brute Force, distinct from simple failed login)
+    3.  How severe is it?
+    
+    IMPORTANT RULES:
+    - Do NOT flag simple "Failed Password" as High/Critical unless there are >10 attempts or it matches a specific wide-scale attack pattern.
+    - Do NOT recommend 'block_ip' for a single failed login. blocking causes chaos. Only block for verified Brute Force or Malicious IPs.
+
+    Output JSON:
+    {{
+        "is_threat": boolean,
+        "confidence": integer (0-100),
+        "severity": "Low" | "Medium" | "High" | "Critical",
+        "root_cause": "short explanation",
+        "remediation": ["step 1", "step 2"] (optional, if threat),
+        "suggested_action": "block_ip"|"disable_user"|"isolate_host"|"none",
+        "action_target": "IP or Username"
+    }}
             """
             
             llm_response = await query_ollama(prompt)
@@ -287,7 +307,8 @@ async def analyze_security_event(request: AnalysisRequest):
                             rem_req = RemediationRequest(
                                 action=action,
                                 target=target,
-                                reason=f"Auto-Triggered by High Severity AI Analysis: {final_analysis['root_cause']}"
+                                reason=f"Auto-Triggered by High Severity AI Analysis: {final_analysis['root_cause']}",
+                                ai_analysis=final_analysis
                             )
                             rem_result = execute_remediation(rem_req)
                             final_analysis["auto_remediation"] = rem_result
@@ -299,6 +320,20 @@ async def analyze_security_event(request: AnalysisRequest):
             print(f"AI Analysis failed: {e}")
             import traceback
             traceback.print_exc()
+
+    # NOTIFICATION LOGIC
+    if final_analysis.get('severity') in ["Critical", "High", "CRITICAL"]:
+        try:
+            note = Notification(
+                type=final_analysis.get('severity'),
+                message=f"Threat Detected: {final_analysis.get('root_cause', 'Unknown')} ({request.source})",
+                timestamp=datetime.utcnow()
+            )
+            db.add(note)
+            db.commit()
+            print(f"Created Notification for {final_analysis.get('severity')} threat.")
+        except Exception as e:
+            print(f"Failed to create notification: {e}")
 
     analysis_cache[cache_key] = final_analysis
     return final_analysis
